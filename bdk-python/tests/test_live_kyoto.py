@@ -5,7 +5,7 @@ import asyncio
 
 network: Network = Network.SIGNET
 
-ip: IpAddress = IpAddress.from_ipv4(68, 47, 229, 218)
+ip: IpAddress = IpAddress.from_ipv4(136, 41, 161, 69)
 peer: Peer = Peer(address=ip, port=None, v2_transport=False)
 
 descriptor: Descriptor = Descriptor(
@@ -55,7 +55,7 @@ class LiveKyotoTest(unittest.IsolatedAsyncioTestCase):
             f"Wallet balance must be greater than 0! Please send funds to {wallet.reveal_next_address(KeychainKind.EXTERNAL).address} and try again."
         )
         log_task.cancel()
-        await client.shutdown()
+        client.shutdown()
 
 if __name__ == "__main__":
     unittest.main()

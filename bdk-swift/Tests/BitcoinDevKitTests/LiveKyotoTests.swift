@@ -10,7 +10,7 @@ final class LiveKyotoTests: XCTestCase {
         descriptor: "wpkh(tprv8ZgxMBicQKsPf2qfrEygW6fdYseJDDrVnDv26PH5BHdvSuG6ecCbHqLVof9yZcMoM31z9ur3tTYbSnr1WBqbGX97CbXcmp5H6qeMpyvx35B/84h/1h/1h/1/*)",
         network: Network.signet
     )
-    private let peer = IpAddress.fromIpv4(q1: 68, q2: 47, q3: 229, q4: 218)
+    private let peer = IpAddress.fromIpv4(q1: 136, q2: 41, q3: 161, q4: 69)
     private let cwd = FileManager.default.currentDirectoryPath.appending("/temp")
 
     override func tearDownWithError() throws {
@@ -55,7 +55,7 @@ final class LiveKyotoTests: XCTestCase {
                 "Wallet must have positive balance, please send funds to \(address)"
             )
             print("Update applied correctly")
-            try await client.shutdown()
+            try client.shutdown()
         } else {
             print("Update is nil. Ensure this test is ran infrequently.")
         }
