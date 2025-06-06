@@ -319,6 +319,11 @@ class PersistenceTest(unittest.TestCase):
         assert wallet.balance().total.to_sat() == 50641167
 
 
+        d_myp = ChangeSetConverter.to_dict(myp.initialize())
+        d_myp2 = ChangeSetConverter.to_dict(myp2.initialize())
+        print(f"{d_myp=}")
+        print(f"{d_myp2=}")
+        assert json.dumps(d_myp) == json.dumps(d_myp2)
 
 
 if __name__ == "__main__":
