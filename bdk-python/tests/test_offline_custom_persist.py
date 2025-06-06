@@ -64,7 +64,7 @@ class ChangeSetConverter:
             txs_list = [_serialize_tx(tx) for tx in tx_graph.txs]
 
             txouts_dict: Dict[str, Dict[str, Any]] = {}
-            for hop, txout in tx_graph.txouts.items():
+            for hop, txout in sorted(tx_graph.txouts.items()):
                 key = json.dumps(_serialize_outpoint(hop))
                 txouts_dict[key] = _serialize_txout(txout)
 
@@ -82,8 +82,12 @@ class ChangeSetConverter:
                     txid_hex = str(anchor.txid)
                 anchors_list.append({"confirmation_block_time": cbt_obj, "txid": txid_hex})
 
-            last_seen_dict: Dict[str, int] = {}
-            for txid_obj, height in tx_graph.last_seen.items():
+            def sort_key(t): 
+                txid_obj , height =t
+                return  txid_obj.serialize().hex()
+
+            last_seen_dict: Dict[str, int] = {}            
+            for txid_obj, height in sorted(tx_graph.last_seen.items(), key=sort_key):
                 try:
                     txid_hex = txid_obj.serialize().hex()
                 except AttributeError:
@@ -99,7 +103,7 @@ class ChangeSetConverter:
 
         def _serialize_indexer(indexer: bdk.IndexerChangeSet) -> Dict[str, Any]:
             lr: Dict[str, int] = {}
-            for did_obj, idx in indexer.last_revealed.items():
+            for did_obj, idx in sorted(indexer.last_revealed.items()):
                 did_hex = did_obj.serialize().hex()
                 lr[did_hex] = idx
             return {"last_revealed": lr}
@@ -179,7 +183,7 @@ class ChangeSetConverter:
 
             txouts_data = data.get("txouts", {})
             txouts_dict: Dict[bdk.HashableOutPoint, bdk.TxOut] = {}
-            for key_str, txout_data in txouts_data.items():
+            for key_str, txout_data in sorted(txouts_data.items()):
                 hop = _deserialize_outpoint(key_str)
                 txout_obj = _deserialize_txout(txout_data)
                 txouts_dict[hop] = txout_obj
@@ -223,7 +227,7 @@ class ChangeSetConverter:
         def _deserialize_indexer(data: Dict[str, Any]) -> bdk.IndexerChangeSet:
             lr_data = data.get("last_revealed", {})
             lr_dict: Dict[bdk.DescriptorId, int] = {}
-            for did_hex, idx in lr_data.items():
+            for did_hex, idx in sorted(lr_data.items()):
                 did_bytes = binascii.unhexlify(did_hex)
                 did_obj = bdk.DescriptorId.from_bytes(did_bytes)
                 lr_dict[did_obj] = idx
@@ -319,6 +323,11 @@ class PersistenceTest(unittest.TestCase):
         assert wallet.balance().total.to_sat() == 50641167
 
 
+        d_myp = ChangeSetConverter.to_dict(myp.initialize())
+        d_myp2 = ChangeSetConverter.to_dict(myp2.initialize())
+        print(f"{d_myp=}")
+        print(f"{d_myp2=}")
+        assert json.dumps(d_myp) == json.dumps(d_myp2)
 
 
 if __name__ == "__main__":
