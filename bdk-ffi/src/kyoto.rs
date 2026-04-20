@@ -359,6 +359,25 @@ impl CbfClient {
             .map(|ip| Arc::new(IpAddress { inner: ip }))
             .collect()
     }
+
+    /// Get the list of current connections.
+    pub async fn peer_info(&self) -> Result<Vec<Arc<IpAddress>>, CbfError> {
+        let peers = self
+            .sender
+            .peer_info()
+            .await
+            .map_err(|_| CbfError::NodeStopped)?;
+        Ok(peers
+            .into_iter()
+            .filter_map(|(ip, _)| match ip {
+                AddrV2::Ipv4(ip) => Some(IpAddr::V4(ip)),
+                AddrV2::Ipv6(ip) => Some(IpAddr::V6(ip)),
+                _ => None,
+            })
+            .map(|ip| Arc::new(IpAddress { inner: ip }))
+            .collect())
+    }
+
     /// Check if the node is still running in the background.
     pub fn is_running(&self) -> bool {
         self.sender.is_running()
@@ -498,8 +517,15 @@ pub struct Peer {
 
 /// An IP address to connect to over TCP.
 #[derive(Debug, uniffi::Object)]
+#[uniffi::export(Display)]
 pub struct IpAddress {
     inner: IpAddr,
+}
+
+impl core::fmt::Display for IpAddress {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        write!(f, "{}", self.inner)
+    }
 }
 
 #[uniffi::export]
