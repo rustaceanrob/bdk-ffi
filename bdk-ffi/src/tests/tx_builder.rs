@@ -18,6 +18,7 @@ impl FullScanScriptInspector for FullScanInspector {
 }
 
 #[test]
+#[ignore = "requires live MutinyNet Esplora access"]
 fn test_policy_path() {
     let wallet = create_and_sync_wallet();
     let address = wallet
@@ -91,6 +92,7 @@ fn create_and_sync_wallet() -> Wallet {
 }
 
 #[test]
+#[ignore = "requires live MutinyNet Esplora access"]
 fn test_only_witness_utxo_with_finish() {
     let wallet = create_and_sync_wallet();
 
@@ -243,6 +245,7 @@ fn test_add_foreign_utxo_missing_witness_data() {
 }
 
 #[test]
+#[ignore = "requires live MutinyNet Esplora access"]
 fn test_add_foreign_utxo_with_witness_utxo_succeeds() {
     let wallet = create_and_sync_wallet();
     let address = wallet
@@ -321,6 +324,7 @@ fn test_add_foreign_utxo_with_witness_utxo_succeeds() {
 }
 
 #[test]
+#[ignore = "requires live MutinyNet Esplora access"]
 fn test_add_multiple_foreign_utxos_and_finish() {
     let wallet = create_and_sync_wallet();
     let address = wallet
@@ -443,6 +447,7 @@ fn test_add_multiple_foreign_utxos_and_finish() {
 }
 
 #[test]
+#[ignore = "requires live MutinyNet Esplora access"]
 fn test_combined_only_witness_utxo_and_foreign_utxo_with_finish() {
     let wallet = create_and_sync_wallet();
     let address = wallet
